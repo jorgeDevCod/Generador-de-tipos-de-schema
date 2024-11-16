@@ -1,4 +1,3 @@
-// components/SchemaAccordion.jsx
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
@@ -43,7 +42,7 @@ const SchemaAccordion = ({ schemaType, children, onClear, generateJSONLD }) => {
           </button>
         </div>
       </div>
-      
+
       {isOpen && (
         <div className="p-4 bg-white">
           {children}

@@ -1,8 +1,9 @@
-// components/DataCard.jsx
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Input } from './Input';
 import { schemaFields } from '../utils/schemaFields';
+import FAQCard from './FAQCard';
+import BreadcrumbCard from './BreadcrumbCard';
 
 const DataCard = ({
   index,
@@ -15,6 +16,14 @@ const DataCard = ({
 }) => {
   const [isOpen, setIsOpen] = useState(true);
   const fields = schemaFields[type].fields;
+
+  const handleSpecialTypeChange = (newData) => {
+    if (type === 'FAQPage') {
+      onDataChange(index, 'mainEntity', newData.mainEntity);
+    } else if (type === 'BreadcrumbList') {
+      onDataChange(index, 'itemListElement', newData.itemListElement);
+    }
+  };
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-md">
@@ -44,18 +53,24 @@ const DataCard = ({
 
       {isOpen && (
         <div className="space-y-4">
-          {Object.entries(fields).map(([fieldName, fieldConfig]) => (
-            <Input
-              key={fieldName}
-              label={fieldConfig.label}
-              type={fieldConfig.type}
-              value={data[fieldName] || ''}
-              error={errors[fieldName]}
-              onChange={(e) => onDataChange(index, fieldName, e.target.value)}
-              required={schemaFields[type].required.includes(fieldName)}
-              options={fieldConfig.options}
-            />
-          ))}
+          {type === 'FAQPage' ? (
+            <FAQCard data={data} onChange={handleSpecialTypeChange} />
+          ) : type === 'BreadcrumbList' ? (
+            <BreadcrumbCard data={data} onChange={handleSpecialTypeChange} />
+          ) : (
+            Object.entries(fields).map(([fieldName, fieldConfig]) => (
+              <Input
+                key={fieldName}
+                label={fieldConfig.label}
+                type={fieldConfig.type}
+                value={data[fieldName] || ''}
+                error={errors[fieldName]}
+                onChange={(e) => onDataChange(index, fieldName, e.target.value)}
+                required={schemaFields[type].required.includes(fieldName)}
+                options={fieldConfig.options}
+              />
+            ))
+          )}
         </div>
       )}
     </div>
