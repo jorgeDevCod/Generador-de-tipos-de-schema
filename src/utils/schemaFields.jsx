@@ -1,16 +1,53 @@
 // utils/schemaFields.js
 export const schemaFields = {
-    Article: {
-      required: ['headline', 'author', 'datePublished'],
-      fields: {
-        headline: { type: 'text', label: 'Título del artículo' },
-        image: { type: 'url', label: 'URL de la imagen principal' },
-        author: { type: 'text', label: 'Autor' },
-        datePublished: { type: 'date', label: 'Fecha de publicación' },
-        dateModified: { type: 'date', label: 'Fecha de modificación' },
-        publisher: { type: 'text', label: 'Editor' }
-      }
-    },
+  Article: {
+    required: ['headline', 'author', 'datePublished', 'image', 'publisher'],
+    fields: {
+      articleType: {
+        type: 'select',
+        label: 'Tipo de Artículo',
+        options: ['Article', 'NewsArticle', 'BlogPosting']
+      },
+      headline: { type: 'text', label: 'Título' },
+      author: { 
+        type: 'object',
+        fields: {
+          name: { type: 'text', label: 'Nombre del autor' }
+        }
+      },
+      description: { type: 'textarea', label: 'Descripción' },
+      image: { 
+        type: 'object',
+        fields: {
+          url: { type: 'url', label: 'URL de la imagen' },
+          width: { type: 'number', label: 'Ancho de la imagen' },
+          height: { type: 'number', label: 'Alto de la imagen' }
+        }
+      },
+      publisher: {
+        type: 'object',
+        fields: {
+          name: { type: 'text', label: 'Nombre del editor' },
+          logo: {
+            type: 'object',
+            fields: {
+              url: { type: 'url', label: 'URL del logo' },
+              width: { type: 'number', label: 'Ancho del logo' },
+              height: { type: 'number', label: 'Alto del logo' }
+            }
+          }
+        }
+      },
+      datePublished: { 
+        type: 'datetime-local', 
+        label: 'Fecha de publicación' 
+      },
+      dateModified: { 
+        type: 'datetime-local', 
+        label: 'Fecha de modificación' 
+      },
+    }
+  },
   
     BreadcrumbList: {
       required: ['itemListElement'],

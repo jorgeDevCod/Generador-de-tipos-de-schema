@@ -1,4 +1,3 @@
-// components/Input.jsx
 import React from 'react';
 
 export const Input = ({
@@ -8,7 +7,8 @@ export const Input = ({
   error,
   onChange,
   required,
-  options
+  options,
+  placeholder
 }) => {
   const inputClasses = `
     w-full p-2 border rounded-md focus:ring-2 focus:ring-blue-500 
@@ -21,7 +21,11 @@ export const Input = ({
         <label className="block text-sm font-medium text-gray-700">
           {label} {required && <span className="text-red-500">*</span>}
         </label>
-        <select value={value} onChange={onChange} className={inputClasses}>
+        <select 
+          value={value} 
+          onChange={onChange} 
+          className={inputClasses}
+        >
           <option value="">Seleccionar...</option>
           {options.map((option) => (
             <option key={option} value={option}>
@@ -44,6 +48,7 @@ export const Input = ({
           value={value}
           onChange={onChange}
           className={`${inputClasses} min-h-[100px]`}
+          placeholder={placeholder}
         />
         {error && <p className="text-red-500 text-sm">{error}</p>}
       </div>
@@ -60,8 +65,11 @@ export const Input = ({
         value={value}
         onChange={onChange}
         className={inputClasses}
+        placeholder={placeholder}
       />
       {error && <p className="text-red-500 text-sm">{error}</p>}
     </div>
   );
 };
+
+export default Input;
