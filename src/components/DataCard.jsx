@@ -5,6 +5,7 @@ import { schemaFields } from '../utils/schemaFields';
 import FAQCard from './FAQCard';
 import BreadcrumbCard from './BreadcrumbCard';
 import ArticleCard from './ArticleCard';
+import WebSiteCard from './WebSiteCard';
 
 const DataCard = ({
   index,
@@ -27,6 +28,7 @@ const DataCard = ({
         onDataChange(index, 'itemListElement', newData.itemListElement);
         break;
       case 'Article':
+      case 'WebSite':
         Object.entries(newData).forEach(([key, value]) => {
           onDataChange(index, key, value);
         });
@@ -64,6 +66,14 @@ const DataCard = ({
             errors={errors}
           />
         );
+      case 'WebSite':
+        return (
+          <WebSiteCard
+            data={data}
+            onChange={handleSpecialTypeChange}
+            errors={errors}
+          />
+        );
       default:
         return (
           Object.entries(fields).map(([fieldName, fieldConfig]) => (
@@ -82,6 +92,7 @@ const DataCard = ({
     }
   };
 
+  // Rest of the component remains the same
   const renderCardActions = () => (
     <div className="flex space-x-2">
       <button
