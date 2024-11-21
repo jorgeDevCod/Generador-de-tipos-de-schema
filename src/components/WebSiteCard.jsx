@@ -1,5 +1,6 @@
-import React from 'react';
+import React from 'react'; 
 import { Input } from './Input';
+import LanguageSelect from './LanguageSelect';
 
 const WebSiteCard = ({ data, onChange, errors }) => {
   return (
@@ -20,14 +21,14 @@ const WebSiteCard = ({ data, onChange, errors }) => {
         error={errors?.url}
         required
       />
-
+      
       <Input
         label="Descripción"
         type="textarea"
         value={data.description || ''}
         onChange={(e) => onChange({ ...data, description: e.target.value })}
       />
-
+      
       <div className="space-y-2">
         <h4 className="font-medium">Autor</h4>
         <Input
@@ -42,11 +43,11 @@ const WebSiteCard = ({ data, onChange, errors }) => {
           })}
         />
       </div>
-
-      <Input
-        label="Idioma"
+      
+      <LanguageSelect
         value={data.inLanguage || ''}
-        onChange={(e) => onChange({ ...data, inLanguage: e.target.value })}
+        onChange={onChange}
+        error={errors?.inLanguage}
       />
     </div>
   );

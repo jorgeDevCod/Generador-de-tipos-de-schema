@@ -166,25 +166,25 @@ export const schemaFields = {
     }
   },
 
-  // Product: {
-  //   required: ['name', 'description', 'offers'],
-  //   fields: {
-  //     name: { type: 'text', label: 'Nombre del producto' },
-  //     description: { type: 'textarea', label: 'Descripción' },
-  //     image: { type: 'url', label: 'URL de la imagen' },
-  //     brand: { type: 'text', label: 'Marca' },
-  //     sku: { type: 'text', label: 'SKU' },
-  //     gtin: { type: 'text', label: 'GTIN/EAN/UPC' },
-  //     price: { type: 'number', label: 'Precio' },
-  //     priceCurrency: { type: 'text', label: 'Moneda' },
-  //     availability: {
-  //       type: 'select',
-  //       label: 'Disponibilidad',
-  //       options: ['InStock', 'OutOfStock', 'PreOrder', 'Discontinued']
-  //     },
-  //     review: { type: 'textarea', label: 'Reseñas (formato JSON)' }
-  //   }
-  // },
+  Product: {
+    required: ['name', 'description', 'offers'],
+    fields: {
+      name: { type: 'text', label: 'Nombre del producto' },
+      description: { type: 'textarea', label: 'Descripción' },
+      image: { type: 'url', label: 'URL de la imagen' },
+      brand: { type: 'text', label: 'Marca' },
+      sku: { type: 'text', label: 'SKU' },
+      gtin: { type: 'text', label: 'GTIN/EAN/UPC' },
+      price: { type: 'number', label: 'Precio' },
+      priceCurrency: { type: 'text', label: 'Moneda' },
+      availability: {
+        type: 'select',
+        label: 'Disponibilidad',
+        options: ['InStock', 'OutOfStock', 'PreOrder', 'Discontinued']
+      },
+      review: { type: 'textarea', label: 'Reseñas (formato JSON)' }
+    }
+  },
 
   // Recipe: {
   //   required: ['name', 'recipeIngredient', 'recipeInstructions'],
@@ -225,7 +225,15 @@ export const schemaFields = {
       description: { type: 'textarea', label: 'Descripción' },
       author: { type: 'text', label: 'Autor' },
       publisher: { type: 'text', label: 'Editor' },
-      inLanguage: { type: 'text', label: 'Idioma (ej: es-ES)' }
+      inLanguage: {
+        type: 'select',
+        label: 'Idioma',
+        options: [
+          'en-US', 'es-ES', 'es-MX', 'fr-FR', 'de-DE', 
+          'it-IT', 'pt-BR', 'pt-PT', 'ru-RU', 'zh-CN', 
+          'ja-JP', 'ar-SA'
+        ]
+      }
     }
   }
 };
