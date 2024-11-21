@@ -28,13 +28,6 @@ const WebSiteCard = ({ data, onChange, errors }) => {
         onChange={(e) => onChange({ ...data, description: e.target.value })}
       />
 
-      <Input
-        label="Palabras clave"
-        type="textarea"
-        value={data.keywords || ''}
-        onChange={(e) => onChange({ ...data, keywords: e.target.value })}
-      />
-
       <div className="space-y-2">
         <h4 className="font-medium">Autor</h4>
         <Input

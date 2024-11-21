@@ -223,7 +223,6 @@ export const schemaFields = {
       name: { type: 'text', label: 'Nombre del sitio web' },
       url: { type: 'url', label: 'URL del sitio' },
       description: { type: 'textarea', label: 'Descripción' },
-      keywords: { type: 'textarea', label: 'Palabras clave (una por línea)' },
       author: { type: 'text', label: 'Autor' },
       publisher: { type: 'text', label: 'Editor' },
       inLanguage: { type: 'text', label: 'Idioma (ej: es-ES)' }
