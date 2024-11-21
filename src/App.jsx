@@ -38,8 +38,6 @@ const App = () => {
             "@type": "Person",
             "name": data.author?.name
           },
-          "datePublished": data.datePublished,
-          "dateModified": data.dateModified || data.datePublished,
           "description": data.description,
           "image": {
             "@type": "ImageObject",
@@ -56,7 +54,9 @@ const App = () => {
               "width": data.publisher?.logo?.width,
               "height": data.publisher?.logo?.height
             }
-          }
+          },
+          "datePublished": data.datePublished,
+          "dateModified": data.dateModified || data.datePublished,
         };
       case 'FAQPage':
         return {
