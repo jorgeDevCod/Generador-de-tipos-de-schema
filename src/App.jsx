@@ -1,4 +1,3 @@
-// App.js
 import React, { useState } from 'react';
 import Dropdown from './components/Dropdown';
 import DataCard from './components/DataCard';
@@ -110,7 +109,9 @@ const App = () => {
   const generateJSONLD = (schemaType) => {
     const filteredCards = cards.filter((card) => card.type === schemaType);
     const jsonLD = filteredCards.map(card => createIndependentStructure(card.type, card.data));
-    return `<script type="application/ld+json">\n${JSON.stringify(jsonLD, null, 2)}\n</script>`;
+    return jsonLD.map(
+      jsonldItem => `<script type="application/ld+json">\n${JSON.stringify(jsonldItem, null, 2)}\n</script>`
+    ).join('\n');
   };
 
   const getUniqueSchemaTypes = () => {
