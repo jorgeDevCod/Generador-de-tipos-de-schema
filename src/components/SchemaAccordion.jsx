@@ -3,6 +3,7 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 
 const SchemaAccordion = ({ schemaType, children, onClear, generateJSONLD }) => {
   const [isOpen, setIsOpen] = useState(true);
+  const [selectedArticleType, setSelectedArticleType] = useState('Article');
 
   const exportSchema = () => {
     const jsonLD = generateJSONLD();
@@ -13,6 +14,30 @@ const SchemaAccordion = ({ schemaType, children, onClear, generateJSONLD }) => {
     a.download = `${schemaType}.json`;
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const renderArticleTypeSelector = () => {
+    if (schemaType !== 'Article') return null;
+
+    const articleTypes = [
+      { value: "Article", label: "Article" },
+      { value: "NewsArticle", label: "News Article" },
+      { value: "BlogPosting", label: "Blog Posting" }
+    ];
+
+    return (
+      <select
+        value={selectedArticleType}
+        onChange={(e) => setSelectedArticleType(e.target.value)}
+        className="ml-4 p-2 border rounded-md focus:ring-2 focus:ring-blue-500"
+      >
+        {articleTypes.map((type) => (
+          <option key={type.value} value={type.value}>
+            {type.label}
+          </option>
+        ))}
+      </select>
+    );
   };
 
   return (
@@ -26,6 +51,7 @@ const SchemaAccordion = ({ schemaType, children, onClear, generateJSONLD }) => {
             {isOpen ? <ChevronUp /> : <ChevronDown />}
           </button>
           <h2 className="text-xl font-semibold">{schemaType}</h2>
+          {renderArticleTypeSelector()}
         </div>
         <div className="flex space-x-2">
           <button
@@ -49,7 +75,12 @@ const SchemaAccordion = ({ schemaType, children, onClear, generateJSONLD }) => {
           <div className="mt-4">
             <h3 className="font-semibold mb-2">JSON-LD Generado:</h3>
             <pre className="bg-gray-50 p-4 rounded-md overflow-x-auto">
-              <code>{generateJSONLD()}</code>
+              <code>
+                {generateJSONLD().replace(
+                  /"@type":\s*"Article"/,
+                  `"@type": "${selectedArticleType}"`
+                )}
+              </code>
             </pre>
           </div>
         </div>

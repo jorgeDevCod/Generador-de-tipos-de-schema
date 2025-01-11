@@ -1,11 +1,10 @@
-// components/JSONOutput.jsx
 import React from 'react';
 
-const JSONOutput = ({ card }) => {
+const JSONOutput = ({ card, articleType = 'Article' }) => {
   const generateJSONLD = () => {
     const jsonLD = {
       "@context": "https://schema.org",
-      "@type": card.type,
+      "@type": card.type === 'Article' ? articleType : card.type,
       ...card.data
     };
     return JSON.stringify(jsonLD, null, 2);
