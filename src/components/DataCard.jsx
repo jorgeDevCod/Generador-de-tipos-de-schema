@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { Input } from './Input';
-import { schemaFields } from '../utils/schemaFields';
-import FAQCard from './FAQCard';
-import BreadcrumbCard from './BreadcrumbCard';
+import React, { useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { Input } from "./Input"; // Componente reutilizable para entradas.
+import { schemaFields } from "../utils/schemaFields"; // Define los campos de los esquemas.
+import FAQCard from "./FAQCard";
+import BreadcrumbCard from "./BreadcrumbCard";
+import CourseCard from "./CourseCard";
 
 const DataCard = ({
   index,
@@ -12,16 +13,20 @@ const DataCard = ({
   errors,
   onDataChange,
   onRemove,
-  onDuplicate
+  onDuplicate,
 }) => {
   const [isOpen, setIsOpen] = useState(true);
-  const fields = schemaFields[type].fields;
+  const fields = schemaFields[type]?.fields || {};
 
   const handleSpecialTypeChange = (newData) => {
-    if (type === 'FAQPage') {
-      onDataChange(index, 'mainEntity', newData.mainEntity);
-    } else if (type === 'BreadcrumbList') {
-      onDataChange(index, 'itemListElement', newData.itemListElement);
+    if (type === "FAQPage") {
+      onDataChange(index, "mainEntity", newData.mainEntity);
+    } else if (type === "BreadcrumbList") {
+      onDataChange(index, "itemListElement", newData.itemListElement);
+    } else if (type === "Course") {
+      Object.keys(newData).forEach((key) => {
+        onDataChange(index, key, newData[key]);
+      });
     }
   };
 
@@ -53,17 +58,19 @@ const DataCard = ({
 
       {isOpen && (
         <div className="space-y-4">
-          {type === 'FAQPage' ? (
+          {type === "FAQPage" ? (
             <FAQCard data={data} onChange={handleSpecialTypeChange} />
-          ) : type === 'BreadcrumbList' ? (
+          ) : type === "BreadcrumbList" ? (
             <BreadcrumbCard data={data} onChange={handleSpecialTypeChange} />
+          ) : type === "Course" ? (
+            <CourseCard data={data} onChange={handleSpecialTypeChange} />
           ) : (
             Object.entries(fields).map(([fieldName, fieldConfig]) => (
               <Input
                 key={fieldName}
                 label={fieldConfig.label}
                 type={fieldConfig.type}
-                value={data[fieldName] || ''}
+                value={data[fieldName] || ""}
                 error={errors[fieldName]}
                 onChange={(e) => onDataChange(index, fieldName, e.target.value)}
                 required={schemaFields[type].required.includes(fieldName)}

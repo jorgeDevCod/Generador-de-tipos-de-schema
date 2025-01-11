@@ -1,26 +1,51 @@
 // App.js
-import React, { useState } from 'react';
-import Dropdown from './components/Dropdown';
-import DataCard from './components/DataCard';
-import SchemaAccordion from './components/SchemaAccordion';
-import { schemaFields } from './utils/schemaFields';
+import React, { useState } from "react";
+import Dropdown from "./components/Dropdown";
+import DataCard from "./components/DataCard";
+import SchemaAccordion from "./components/SchemaAccordion";
+import { schemaFields } from "./utils/schemaFields";
 
 const App = () => {
   const [cards, setCards] = useState([]);
-  const [errors, setErrors] = useState({});
+  const [ errors, setErrors ] = useState( {} );
+
 
   const validateSchema = (type, data) => {
     const schema = schemaFields[type];
     const newErrors = {};
 
-    schema.required.forEach(field => {
-      if (field === 'mainEntity' || field === 'itemListElement') {
-        if (!data[field] || !Array.isArray(data[field]) || data[field].length === 0) {
-          newErrors[field] = 'Debe agregar al menos un elemento';
+    if (type === "Course") {
+      if (
+        !data.hasCourseInstance ||
+        !Array.isArray(data.hasCourseInstance) ||
+        data.hasCourseInstance.length === 0
+      ) {
+        newErrors.hasCourseInstance =
+          "Debe incluir al menos una instancia del curso.";
+      }
+      data.hasCourseInstance?.forEach((instance, idx) => {
+        if (!instance.location || !instance.location.name) {
+          newErrors[`hasCourseInstance[${idx}].location.name`] =
+            "El nombre de la ubicación es obligatorio.";
+        }
+      });
+    }
+
+    schema.required.forEach((field) => {
+      if (field === "mainEntity" || field === "itemListElement") {
+        if (
+          !data[field] ||
+          !Array.isArray(data[field]) ||
+          data[field].length === 0
+        ) {
+          newErrors[field] = "Debe agregar al menos un elemento";
         }
       } else {
-        if (!data[field] || (typeof data[field] === 'string' && data[field].trim() === '')) {
-          newErrors[field] = 'Este campo es requerido';
+        if (
+          !data[field] ||
+          (typeof data[field] === "string" && data[field].trim() === "")
+        ) {
+          newErrors[field] = "Este campo es requerido";
         }
       }
     });
@@ -30,14 +55,26 @@ const App = () => {
 
   const handleDataChange = (index, field, value) => {
     const newCards = [...cards];
-    
-    if (field === 'itemListElement') {
+
+    if (field === "itemListElement") {
       newCards[index].data[field] = Array.isArray(value) ? value : [];
     } else {
       newCards[index].data[field] = value;
     }
 
-    const newErrors = validateSchema(newCards[index].type, newCards[index].data);
+    // Normaliza hasCourseInstance si es necesario
+    if (newCards[index].type === "Course") {
+      newCards[index].data.hasCourseInstance = Array.isArray(
+        newCards[index].data.hasCourseInstance
+      )
+        ? newCards[index].data.hasCourseInstance
+        : [];
+    }
+
+    const newErrors = validateSchema(
+      newCards[index].type,
+      newCards[index].data
+    );
     setErrors({ ...errors, [index]: newErrors });
 
     setCards(newCards);
@@ -45,46 +82,57 @@ const App = () => {
 
   const generateJSONLD = (schemaType) => {
     const filteredCards = cards.filter((card) => card.type === schemaType);
-    
-    const jsonLD = filteredCards.map(card => {
+
+    const jsonLD = filteredCards.map((card) => {
       const formattedData = { ...card.data };
-      
-      if (schemaType === 'FAQPage' && formattedData.mainEntity) {
-        formattedData.mainEntity = formattedData.mainEntity.map(item => ({
-          "@type": "Question",
-          "name": item.name,
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": item.acceptedAnswer.text
-          }
-        }));
-      }
-      
-      if (schemaType === 'BreadcrumbList' && formattedData.itemListElement) {
-        formattedData.itemListElement = formattedData.itemListElement.map((item, index) => ({
-          "@type": "ListItem",
-          "position": index + 1,
-          "name": item.name,
-          "item": item.item
-        }));
+
+      if (schemaType === "Course") {
+        formattedData.provider = {
+          "@type": "Organization",
+          ...formattedData.provider,
+        };
+
+        formattedData.offers = {
+          "@type": "Offer",
+          ...formattedData.offers,
+        };
+
+        // Verificar que hasCourseInstance sea un arreglo válido
+        formattedData.hasCourseInstance = Array.isArray(
+          formattedData.hasCourseInstance
+        )
+          ? formattedData.hasCourseInstance.map((instance) => ({
+              "@type": "CourseInstance",
+              ...instance,
+              location: {
+                "@type": "Place",
+                ...instance.location,
+              },
+            }))
+          : [];
       }
 
       return {
         "@context": "https://schema.org",
         "@type": schemaType,
-        ...formattedData
+        ...formattedData,
       };
     });
 
-    return `<script type="application/ld+json">\n${JSON.stringify(jsonLD, null, 2)}\n</script>`;
+    return `<script type="application/ld+json">\n${JSON.stringify(
+      jsonLD,
+      null,
+      2
+    )}\n</script>`;
   };
 
+
   const getUniqueSchemaTypes = () => {
-    return [...new Set(cards.map(card => card.type))];
+    return [...new Set(cards.map((card) => card.type))];
   };
 
   const handleClear = (schemaType) => {
-    setCards(cards.filter(card => card.type !== schemaType));
+    setCards(cards.filter((card) => card.type !== schemaType));
   };
 
   return (
@@ -94,20 +142,22 @@ const App = () => {
       </h1>
 
       <div className="flex justify-center space-x-4">
-        <Dropdown onAddCard={(type) => {
-          const newCard = { 
-            type, 
-            data: type === 'BreadcrumbList' ? { itemListElement: [] } : {}, 
-            id: Date.now() 
-          };
-          setCards([...cards, newCard]);
-        }} />
+        <Dropdown
+          onAddCard={(type) => {
+            const newCard = {
+              type,
+              data: type === "BreadcrumbList" ? { itemListElement: [] } : {},
+              id: Date.now(),
+            };
+            setCards([...cards, newCard]);
+          }}
+        />
       </div>
 
       <div className="mt-6">
         {getUniqueSchemaTypes().map((schemaType) => {
-          const schemaCards = cards.filter(card => card.type === schemaType);
-          
+          const schemaCards = cards.filter((card) => card.type === schemaType);
+
           return (
             <SchemaAccordion
               key={schemaType}
@@ -117,7 +167,7 @@ const App = () => {
             >
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {schemaCards.map((card, index) => {
-                  const cardIndex = cards.findIndex(c => c.id === card.id);
+                  const cardIndex = cards.findIndex((c) => c.id === card.id);
                   return (
                     <div key={card.id} className="w-full">
                       <DataCard
@@ -126,17 +176,20 @@ const App = () => {
                         data={card.data}
                         errors={errors[cardIndex] || {}}
                         onDataChange={handleDataChange}
-                        onRemove={() => setCards(cards.filter(c => c.id !== card.id))}
+                        onRemove={() =>
+                          setCards(cards.filter((c) => c.id !== card.id))
+                        }
                         onDuplicate={() => {
                           const newCard = {
                             ...card,
                             id: Date.now(),
                             data: {
                               ...card.data,
-                              itemListElement: card.type === 'BreadcrumbList' 
-                                ? [...(card.data.itemListElement || [])]
-                                : card.data.itemListElement
-                            }
+                              itemListElement:
+                                card.type === "BreadcrumbList"
+                                  ? [...(card.data.itemListElement || [])]
+                                  : card.data.itemListElement,
+                            },
                           };
                           setCards([...cards, newCard]);
                         }}
