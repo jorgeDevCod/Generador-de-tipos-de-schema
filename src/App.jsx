@@ -1,17 +1,10 @@
-<<<<<<< HEAD
-// App.js
+
 import React, { useState } from "react";
 import Dropdown from "./components/Dropdown";
 import DataCard from "./components/DataCard";
 import SchemaAccordion from "./components/SchemaAccordion";
 import { schemaFields } from "./utils/schemaFields";
-=======
-import React, { useState } from 'react';
-import Dropdown from './components/Dropdown';
-import DataCard from './components/DataCard';
-import SchemaAccordion from './components/SchemaAccordion';
-import { schemaFields } from './utils/schemaFields';
->>>>>>> 0a365fa278dd1988459e521b1405db3a0781de5f
+
 
 const App = () => {
   const [cards, setCards] = useState([]);
@@ -154,7 +147,6 @@ const App = () => {
 
   const generateJSONLD = (schemaType) => {
     const filteredCards = cards.filter((card) => card.type === schemaType);
-<<<<<<< HEAD
 
     const jsonLD = filteredCards.map((card) => {
       const formattedData = { ...card.data };
@@ -197,12 +189,6 @@ const App = () => {
       null,
       2
     )}\n</script>`;
-=======
-    const jsonLD = filteredCards.map(card => createIndependentStructure(card.type, card.data));
-    return jsonLD.map(
-      jsonldItem => `<script type="application/ld+json">\n${JSON.stringify(jsonldItem, null, 2)}\n</script>`
-    ).join('\n');
->>>>>>> 0a365fa278dd1988459e521b1405db3a0781de5f
   };
 
 
@@ -221,7 +207,6 @@ const App = () => {
       </h1>
 
       <div className="flex justify-center space-x-4">
-<<<<<<< HEAD
         <Dropdown
           onAddCard={(type) => {
             const newCard = {
@@ -232,25 +217,11 @@ const App = () => {
             setCards([...cards, newCard]);
           }}
         />
-=======
-        <Dropdown onAddCard={(type) => {
-          const newCard = {
-            type,
-            data: type === 'BreadcrumbList' ? { itemListElement: [] } : {},
-            id: Date.now()
-          };
-          setCards([...cards, newCard]);
-        }} />
->>>>>>> 0a365fa278dd1988459e521b1405db3a0781de5f
       </div>
 
       <div className="mt-6">
         {getUniqueSchemaTypes().map((schemaType) => {
-<<<<<<< HEAD
           const schemaCards = cards.filter((card) => card.type === schemaType);
-=======
-          const schemaCards = cards.filter(card => card.type === schemaType);
->>>>>>> 0a365fa278dd1988459e521b1405db3a0781de5f
 
           return (
             <SchemaAccordion
@@ -278,7 +249,6 @@ const App = () => {
                           const newCard = {
                             type: card.type,
                             id: Date.now(),
-<<<<<<< HEAD
                             data: {
                               ...card.data,
                               itemListElement:
@@ -286,9 +256,6 @@ const App = () => {
                                   ? [...(card.data.itemListElement || [])]
                                   : card.data.itemListElement,
                             },
-=======
-                            data: independentStructure
->>>>>>> 0a365fa278dd1988459e521b1405db3a0781de5f
                           };
                           setCards([...cards, newCard]);
                         }}
