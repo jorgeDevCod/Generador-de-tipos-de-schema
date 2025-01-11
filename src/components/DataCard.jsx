@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-import React, { useState } from "react";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import { Input } from "./Input"; // Componente reutilizable para entradas.
-import { schemaFields } from "../utils/schemaFields"; // Define los campos de los esquemas.
-import FAQCard from "./FAQCard";
-import BreadcrumbCard from "./BreadcrumbCard";
-import CourseCard from "./CourseCard";
-=======
 import React, { useState } from 'react';
 import { ChevronDown, ChevronUp, Copy, Trash2 } from 'lucide-react';
 import { Input } from './Input';
@@ -15,7 +6,6 @@ import FAQCard from './FAQCard';
 import BreadcrumbCard from './BreadcrumbCard';
 import ArticleCard from './ArticleCard';
 import WebSiteCard from './WebSiteCard';
->>>>>>> 0a365fa278dd1988459e521b1405db3a0781de5f
 
 const DataCard = ({
   index,
@@ -30,16 +20,6 @@ const DataCard = ({
   const fields = schemaFields[type]?.fields || {};
 
   const handleSpecialTypeChange = (newData) => {
-<<<<<<< HEAD
-    if (type === "FAQPage") {
-      onDataChange(index, "mainEntity", newData.mainEntity);
-    } else if (type === "BreadcrumbList") {
-      onDataChange(index, "itemListElement", newData.itemListElement);
-    } else if (type === "Course") {
-      Object.keys(newData).forEach((key) => {
-        onDataChange(index, key, newData[key]);
-      });
-=======
     switch(type) {
       case 'FAQPage':
         onDataChange(index, 'mainEntity', newData.mainEntity);
@@ -55,7 +35,6 @@ const DataCard = ({
         break;
       default:
         break;
->>>>>>> 0a365fa278dd1988459e521b1405db3a0781de5f
     }
   };
 
@@ -158,7 +137,6 @@ const DataCard = ({
 
       {isOpen && (
         <div className="space-y-4">
-<<<<<<< HEAD
           {type === "FAQPage" ? (
             <FAQCard data={data} onChange={handleSpecialTypeChange} />
           ) : type === "BreadcrumbList" ? (
@@ -179,7 +157,6 @@ const DataCard = ({
               />
             ))
           )}
-=======
           {renderFields()}
         </div>
       )}
@@ -191,7 +168,6 @@ const DataCard = ({
               <li key={field}>{error}</li>
             ))}
           </ul>
->>>>>>> 0a365fa278dd1988459e521b1405db3a0781de5f
         </div>
       )}
     </div>
