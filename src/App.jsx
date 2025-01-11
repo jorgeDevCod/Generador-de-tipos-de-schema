@@ -1,15 +1,12 @@
-
 import React, { useState } from "react";
 import Dropdown from "./components/Dropdown";
 import DataCard from "./components/DataCard";
 import SchemaAccordion from "./components/SchemaAccordion";
 import { schemaFields } from "./utils/schemaFields";
 
-
 const App = () => {
   const [cards, setCards] = useState([]);
-  const [ errors, setErrors ] = useState( {} );
-
+  const [errors, setErrors] = useState({});
 
   const validateSchema = (type, data) => {
     const schema = schemaFields[type];
@@ -17,28 +14,24 @@ const App = () => {
 
     if (type === "Course") {
       if (
-        !data.hasCourseInstance ||
         !Array.isArray(data.hasCourseInstance) ||
         data.hasCourseInstance.length === 0
       ) {
         newErrors.hasCourseInstance =
           "Debe incluir al menos una instancia del curso.";
+      } else {
+        data.hasCourseInstance.forEach((instance, idx) => {
+          if (!instance.location || !instance.location.name) {
+            newErrors[`hasCourseInstance[${idx}].location.name`] =
+              "El nombre de la ubicación es obligatorio.";
+          }
+        });
       }
-      data.hasCourseInstance?.forEach((instance, idx) => {
-        if (!instance.location || !instance.location.name) {
-          newErrors[`hasCourseInstance[${idx}].location.name`] =
-            "El nombre de la ubicación es obligatorio.";
-        }
-      });
     }
 
     schema.required.forEach((field) => {
       if (field === "mainEntity" || field === "itemListElement") {
-        if (
-          !data[field] ||
-          !Array.isArray(data[field]) ||
-          data[field].length === 0
-        ) {
+        if (!Array.isArray(data[field]) || data[field].length === 0) {
           newErrors[field] = "Debe agregar al menos un elemento";
         }
       } else {
@@ -55,65 +48,65 @@ const App = () => {
   };
 
   const createIndependentStructure = (type, data) => {
-    switch(type) {
-      case 'Article':
+    switch (type) {
+      case "Article":
         return {
           "@context": "https://schema.org",
           "@type": data.articleType || "Article",
-          "headline": data.headline,
-          "author": {
+          headline: data.headline,
+          author: {
             "@type": "Person",
-            "name": data.author?.name
+            name: data.author?.name,
           },
-          "description": data.description,
-          "image": {
+          description: data.description,
+          image: {
             "@type": "ImageObject",
-            "url": data.image?.url,
-            "width": data.image?.width,
-            "height": data.image?.height
+            url: data.image?.url,
+            width: data.image?.width,
+            height: data.image?.height,
           },
-          "publisher": {
+          publisher: {
             "@type": "Organization",
-            "name": data.publisher?.name,
-            "logo": {
+            name: data.publisher?.name,
+            logo: {
               "@type": "ImageObject",
-              "url": data.publisher?.logo?.url,
-              "width": data.publisher?.logo?.width,
-              "height": data.publisher?.logo?.height
-            }
+              url: data.publisher?.logo?.url,
+              width: data.publisher?.logo?.width,
+              height: data.publisher?.logo?.height,
+            },
           },
-          "datePublished": data.datePublished,
-          "dateModified": data.dateModified || data.datePublished,
+          datePublished: data.datePublished,
+          dateModified: data.dateModified || data.datePublished,
         };
-      case 'FAQPage':
+      case "FAQPage":
         return {
           "@context": "https://schema.org",
           "@type": "FAQPage",
-          "mainEntity": data.mainEntity?.map(item => ({
+          mainEntity: data.mainEntity?.map((item) => ({
             "@type": "Question",
-            "name": item.name,
-            "acceptedAnswer": {
+            name: item.name,
+            acceptedAnswer: {
               "@type": "Answer",
-              "text": item.acceptedAnswer.text
-            }
-          }))
+              text: item.acceptedAnswer.text,
+            },
+          })),
         };
-      case 'BreadcrumbList':
+      case "BreadcrumbList":
         return {
           "@context": "https://schema.org",
           "@type": "BreadcrumbList",
-          "itemListElement": data.itemListElement?.map((item, index) => ({
+          itemListElement: data.itemListElement?.map((item, index) => ({
             "@type": "ListItem",
-            "position": index + 1,
-            "name": item.name,
-            "item": item.item
-          }))
+            position: index + 1,
+            name: item.name,
+            item: item.item,
+          })),
         };
       default:
         return {
           "@context": "https://schema.org",
           "@type": type,
-          ...data
+          ...data,
         };
     }
   };
@@ -121,7 +114,7 @@ const App = () => {
   const handleDataChange = (index, field, value) => {
     const newCards = [...cards];
 
-    if (field === 'itemListElement') {
+    if (field === "itemListElement") {
       newCards[index].data[field] = Array.isArray(value) ? value : [];
     } else {
       newCards[index].data[field] = value;
@@ -191,7 +184,6 @@ const App = () => {
     )}\n</script>`;
   };
 
-
   const getUniqueSchemaTypes = () => {
     return [...new Set(cards.map((card) => card.type))];
   };
@@ -245,7 +237,8 @@ const App = () => {
                           setCards(cards.filter((c) => c.id !== card.id))
                         }
                         onDuplicate={() => {
-                          const independentStructure = createIndependentStructure(card.type, card.data);
+                          const independentStructure =
+                            createIndependentStructure(card.type, card.data);
                           const newCard = {
                             type: card.type,
                             id: Date.now(),

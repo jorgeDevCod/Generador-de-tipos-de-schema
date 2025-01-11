@@ -69,12 +69,9 @@ const CourseCard = ({ data, onChange }) => {
       };
     }
 
-    // Asegurarnos de que 'location' esté correctamente formado
-    if (field === "location") {
-      newInstances[index].location = {
-        "@type": "Place",
-        name: value,
-      };
+    // Asegurarnos de que 'location' esté actualizado correctamente
+    if (field === "location" && !newInstances[index].location) {
+      newInstances[index].location = { "@type": "Place", name: value };
     }
 
     onChange({
