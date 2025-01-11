@@ -128,11 +128,7 @@ const App = () => {
   const handleDataChange = (index, field, value) => {
     const newCards = [...cards];
 
-<<<<<<< HEAD
-    if (field === "itemListElement") {
-=======
     if (field === 'itemListElement') {
->>>>>>> 0a365fa278dd1988459e521b1405db3a0781de5f
       newCards[index].data[field] = Array.isArray(value) ? value : [];
     } else {
       newCards[index].data[field] = value;
