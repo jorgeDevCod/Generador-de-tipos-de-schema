@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { Input } from "./Input"; // Componente reutilizable para entradas.
-import { schemaFields } from "../utils/schemaFields"; // Define los campos de los esquemas.
+import { Input } from "./Input";
+import { schemaFields } from "../utils/schemaFields";
 import FAQCard from "./FAQCard";
 import BreadcrumbCard from "./BreadcrumbCard";
 import CourseCard from "./CourseCard";
+import CardJSONOutput from "./CardJSONOutput";
 
 const DataCard = ({
   index,
@@ -14,6 +15,7 @@ const DataCard = ({
   onDataChange,
   onRemove,
   onDuplicate,
+  articleType = "Article",
 }) => {
   const [isOpen, setIsOpen] = useState(true);
   const fields = schemaFields[type]?.fields || {};
@@ -78,6 +80,8 @@ const DataCard = ({
               />
             ))
           )}
+
+          <CardJSONOutput type={type} data={data} articleType={articleType} />
         </div>
       )}
     </div>

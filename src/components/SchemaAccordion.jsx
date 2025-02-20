@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import React, { useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 const SchemaAccordion = ({ schemaType, children, onClear, generateJSONLD }) => {
   const [isOpen, setIsOpen] = useState(true);
-  const [selectedArticleType, setSelectedArticleType] = useState('Article');
+  const [selectedArticleType, setSelectedArticleType] = useState("Article");
 
   const exportSchema = () => {
     const jsonLD = generateJSONLD();
-    const blob = new Blob([jsonLD], { type: 'application/json' });
+    const blob = new Blob([jsonLD], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = `${schemaType}.json`;
     a.click();
@@ -17,12 +17,12 @@ const SchemaAccordion = ({ schemaType, children, onClear, generateJSONLD }) => {
   };
 
   const renderArticleTypeSelector = () => {
-    if (schemaType !== 'Article') return null;
+    if (schemaType !== "Article") return null;
 
     const articleTypes = [
       { value: "Article", label: "Article" },
       { value: "NewsArticle", label: "News Article" },
-      { value: "BlogPosting", label: "Blog Posting" }
+      { value: "BlogPosting", label: "Blog Posting" },
     ];
 
     return (
@@ -39,6 +39,14 @@ const SchemaAccordion = ({ schemaType, children, onClear, generateJSONLD }) => {
       </select>
     );
   };
+
+  // Modificar los children para pasar el articleType
+  const childrenWithArticleType = React.Children.map(children, (child) => {
+    if (React.isValidElement(child)) {
+      return React.cloneElement(child, { articleType: selectedArticleType });
+    }
+    return child;
+  });
 
   return (
     <div className="mb-6 border rounded-lg overflow-hidden">
@@ -69,22 +77,7 @@ const SchemaAccordion = ({ schemaType, children, onClear, generateJSONLD }) => {
         </div>
       </div>
 
-      {isOpen && (
-        <div className="p-4 bg-white">
-          {children}
-          <div className="mt-4">
-            <h3 className="font-semibold mb-2">JSON-LD Generado:</h3>
-            <pre className="bg-gray-50 p-4 rounded-md overflow-x-auto">
-              <code>
-                {generateJSONLD().replace(
-                  /"@type":\s*"Article"/,
-                  `"@type": "${selectedArticleType}"`
-                )}
-              </code>
-            </pre>
-          </div>
-        </div>
-      )}
+      {isOpen && <div className="p-4 bg-white">{childrenWithArticleType}</div>}
     </div>
   );
 };
